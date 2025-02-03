@@ -6,6 +6,7 @@ export default async function UserPage() {
 
   return (
     <div>
+      <h1>用户信息</h1>
       {session?.user ? <p>{JSON.stringify(session.user)}</p> : <p>未登录</p>}
     </div>
   );
