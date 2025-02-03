@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   return (
     <main className="flex min-h-[200px] flex-col items-center justify-between p-24">
-      <form
+      {/* <form
         action={async () => {
           "use server";
           // 登录完成后，重定向到user页面
@@ -12,7 +12,7 @@ export default function Home() {
         }}
       >
         <Button>github登录</Button>
-      </form>
+      </form> */}
       <form
         action={async () => {
           "use server";
