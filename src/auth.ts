@@ -1,21 +1,14 @@
 import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-import { prisma } from "@/prisma";
-import Gitee from "./providers/gitee";
+import authConfig from "./auth.config";
+
+import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client/edge";
-// import { withAccelerate } from "@prisma/extension-accelerate";
+import { prisma } from "./prisma";
 
-// const prisma = new PrismaClient().$extends(withAccelerate());
+// const prisma = new PrismaClient();
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  // adapter: PrismaAdapter(prisma),
-  experimental: { enableWebAuthn: true },
-  providers: [
-    GitHub,
-    Gitee({
-      clientId: process.env.GITEE_CLIENT_ID,
-      clientSecret: process.env.GITEE_CLIENT_SECRET,
-    }),
-  ],
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
+  ...authConfig,
 });
