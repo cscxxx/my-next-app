@@ -34,7 +34,9 @@
     ],
     // 路径别名配置
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      // 项目跟路径
+      "@@/*": ["./"],
     },
     // 强制文件名大小写一致
     "forceConsistentCasingInFileNames": true,
