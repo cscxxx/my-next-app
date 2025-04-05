@@ -1,9 +1,9 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "./prisma";
+import prisma from "./lib/prisma";
 
 // const prisma = new PrismaClient();
 

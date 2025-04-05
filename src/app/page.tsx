@@ -1,27 +1,18 @@
-import { signIn } from "@/auth";
-import { Button } from "@/components/ui/button";
-
-export default function Home() {
+import prisma from "@/lib/prisma";
+export default async function Home() {
+  const users = await prisma.user.findMany();
   return (
-    <main className="flex min-h-[200px] flex-col items-center justify-between p-24">
-      {/* <form
-        action={async () => {
-          "use server";
-          // 登录完成后，重定向到user页面
-          await signIn("github", { redirectTo: "/user" });
-        }}
-      >
-        <Button>github登录</Button>
-      </form> */}
-      <form
-        action={async () => {
-          "use server";
-          // 登录完成后，重定向到user页面
-          await signIn("gitee", { redirectTo: "/user" });
-        }}
-      >
-        <Button>gitee登录</Button>
-      </form>
-    </main>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center -mt-16">
+      <h1 className="text-4xl font-bold mb-8 font-[family-name:var(--font-geist-sans)] text-[#333333]">
+        Superblog
+      </h1>
+      <ol className="list-decimal list-inside font-[family-name:var(--font-geist-sans)]">
+        {users.map((user) => (
+          <li key={user.id} className="mb-2">
+            {user.name}
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
