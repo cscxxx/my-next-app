@@ -6,26 +6,31 @@ import { z } from "zod";
 export async function getUser(email: string): Promise<User | undefined> {
   try {
     // 使用 $queryRaw 执行原生 SQL 查询
-    // const user = await prisma.$queryRaw<
-    //   User[]
-    // >`SELECT * FROM users WHERE email = ${email}`;
-    //   const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
+    const user = await prisma.$queryRaw<
+      User[]
+    >`SELECT * FROM user WHERE email = ${email} `;
+    if (user.length === 0) {
+      return undefined;
+    }
+
+    return user[0];
+    // const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
     // const user = prisma.user.findUnique({
     //   where: {
     //     email: email,
     //   },
     // });
     // return user?.rows[0];
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({
-          id: "1",
-          name: "John Doe",
-          email: "EMAIL  k",
-          password: "hashedpassword",
-        });
-      });
-    });
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     resolve({
+    //       id: "1",
+    //       name: "John Doe",
+    //       email: "EMAIL  k",
+    //       password: "hashedpassword",
+    //     });
+    //   });
+    // });
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
@@ -48,10 +53,19 @@ export async function addUser(
   try {
     const FormSchema = z.object({
       id: z.string(),
-      email: z.string({
-        invalid_type_error: "Please select a customer.",
+      email: z
+        .string({
+          invalid_type_error: "Please select a customer.",
+        })
+        .min(1, {
+          message: "Please select a customer.",
+        })
+        .email({
+          message: "Please enter a valid email address.",
+        }),
+      password: z.string().min(6, {
+        message: "密码至少6位",
       }),
-      password: z.string(),
     });
     const CreateInvoice = FormSchema.omit({ id: true });
     // Validate form using Zod
@@ -61,6 +75,8 @@ export async function addUser(
     });
     // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
+      console.log(validatedFields.error.flatten().fieldErrors);
+
       return await {
         errors: validatedFields.error.flatten().fieldErrors,
         message: "表单校验失败！",
