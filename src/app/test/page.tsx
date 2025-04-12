@@ -4,7 +4,7 @@ export default () => {
   return (
     <div>
       <div
-        className={clsx("grid grid-cols-5", {
+        className={clsx("grid grid-cols-1", {
           "sm:grid-cols-1": true,
           "md:grid-cols-2": true,
           "lg:grid-cols-3": true,
