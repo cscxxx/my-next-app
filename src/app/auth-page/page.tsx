@@ -1,5 +1,5 @@
 import React from "react";
 
 export default function Page() {
-  return <div>Auth Page</div>;
+  return <div>后台统计</div>;
 }

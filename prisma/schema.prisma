@@ -16,10 +16,17 @@ model User {
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   content   String?
-  published Boolean @default(false)
+  published Boolean   @default(false)
   authorId  Int
-  author    User    @relation(fields: [authorId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
+  date      DateTime? @default(now())
+}
+
+// 标签
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
 }

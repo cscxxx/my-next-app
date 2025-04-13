@@ -28,7 +28,7 @@ export default function SideNav() {
           </button>
         </form> */}
         <Link href={"/auth-page"}>
-          <ListBulletIcon className="w-[48px] rounded-md hover:bg-sky-100 hover:text-blue-600 " />
+          <ListBulletIcon className="w-[48px] rounded-md bg-gray-50 hover:bg-sky-100 hover:text-blue-600 " />
         </Link>
       </div>
     </div>
