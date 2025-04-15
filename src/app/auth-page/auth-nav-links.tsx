@@ -19,6 +19,11 @@ const links = [
     href: "/auth-page/test",
     icon: DocumentDuplicateIcon,
   },
+  {
+    name: "Tags",
+    href: "/auth-page/tags",
+    icon: DocumentDuplicateIcon,
+  },
   // {
   //   name: "Invoices",
   //   href: "/dashboard/invoices",
