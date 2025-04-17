@@ -47,4 +47,21 @@ export const { auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        // 添加更多你需要的字段
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user = { ...session.user, ...token };
+      }
+      return session;
+    },
+  },
 });

@@ -62,22 +62,22 @@ export default async function InvoicesTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  作者
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  标题
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  内容
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  标签
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  是否已发布
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
+                  <span className="sr-only">操作</span>
                 </th>
               </tr>
             </thead>
@@ -89,34 +89,30 @@ export default async function InvoicesTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {/* <Image
-                        src={post.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${post.name}'s profile picture`}
-                      /> */}
-                      <p>{post.authorId}</p>
+                      <p>{post.author.name}</p>
                     </div>
                   </td>
+                  <td className="whitespace-nowrap px-3 py-3">{post.title}</td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {post.content}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatCurrency(post.amount)} */}
+                    {post.tags?.map((tag) => {
+                      return (
+                        <div key={tag.id} className="flex items-center gap-3">
+                          <p>{tag.name}</p>
+                        </div>
+                      );
+                    })}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {/* {formatDateToLocal(post.date)} */}
+                    {post.published ? "是" : "否"}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {/* <InvoiceStatus status={post.status} /> */}
-                  </td>
+                  {/* <td className="whitespace-nowrap px-3 py-3">{post?.date}</td> */}
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <div>更新</div>
-                      <div>删除</div>
-                      {/* <UpdatePost id={post.id} />
-                      <DeletePost id={post.id} /> */}
+                      <UpdatePost id={post.id} />
+                      <DeletePost id={post.id} />
                     </div>
                   </td>
                 </tr>
