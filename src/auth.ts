@@ -1,10 +1,11 @@
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
-import Credentials from "next-auth/providers/credentials";
-import { z } from "zod";
-import bcrypt from "bcrypt";
+
 import { User } from "@/app/api/common/definitions";
 import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
+import Credentials from "next-auth/providers/credentials";
+import { z } from "zod";
 
 async function getUser(email: string): Promise<User | undefined | null | any> {
   try {
@@ -39,7 +40,6 @@ export const { auth, signIn, signOut } = NextAuth({
           // const passwordsMatch = await Promise.resolve(
           //   password === user.password
           // );
-
           if (passwordsMatch) return user;
         }
         console.log("Invalid credentials");
@@ -47,21 +47,4 @@ export const { auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        // 添加更多你需要的字段
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user = { ...session.user, ...token };
-      }
-      return session;
-    },
-  },
 });
