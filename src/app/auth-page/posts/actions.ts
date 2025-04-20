@@ -3,14 +3,42 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { log } from "console";
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 5;
+/**
+ * 模糊查询所有文章
+ * @param query
+ * @param currentPage
+ * @returns
+ */
 export async function fetchFilteredPosts(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await prisma.post.findMany({
+    return prisma.post.findMany({
+      take: ITEMS_PER_PAGE,
+      skip: offset,
+      where: {
+        OR: [
+          { title: { contains: query } },
+          {
+            content: { contains: query },
+          },
+          {
+            tags: {
+              some: {
+                OR: [
+                  { name: { contains: query } },
+                  { desc: { contains: query } },
+                ],
+              },
+            },
+          },
+          {
+            author: { name: { contains: query } },
+          },
+        ],
+      },
       include: {
         author: {
           select: {
@@ -18,37 +46,54 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
             email: true,
           },
         },
-        tags: true,
+        tags: {
+          select: {
+            name: true,
+            desc: true,
+          },
+        },
       },
     });
-    return invoices;
-
-    // const invoices = await sql<InvoicesTable>`
-    //   SELECT
-    //     invoices.id,
-    //     invoices.amount,
-    //     invoices.date,
-    //     invoices.status,
-    //     customers.name,
-    //     customers.email,
-    //     customers.image_url
-    //   FROM invoices
-    //   JOIN customers ON invoices.customer_id = customers.id
-    //   WHERE
-    //     customers.name ILIKE ${`%${query}%`} OR
-    //     customers.email ILIKE ${`%${query}%`} OR
-    //     invoices.amount::text ILIKE ${`%${query}%`} OR
-    //     invoices.date::text ILIKE ${`%${query}%`} OR
-    //     invoices.status ILIKE ${`%${query}%`}
-    //   ORDER BY invoices.date DESC
-    //   LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    // `;
-    // return invoices.rows;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoices.");
   }
 }
+/**
+ *  获取文章总页数
+ * @param query 模糊查询的关键字
+ * @returns
+ */
+export const fetchPostsPages = async (query: string) => {
+  try {
+    return await prisma.post.count({
+      where: {
+        OR: [
+          { title: { contains: query } },
+          {
+            content: { contains: query },
+          },
+          {
+            tags: {
+              some: {
+                OR: [
+                  { name: { contains: query } },
+                  { desc: { contains: query } },
+                ],
+              },
+            },
+          },
+          {
+            author: { name: { contains: query } },
+          },
+        ],
+      },
+    });
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch invoices.");
+  }
+};
 
 export async function createPost(prevState: any, formState: FormData) {
   const title = formState.get("title");

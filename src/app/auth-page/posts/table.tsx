@@ -1,11 +1,5 @@
-import Image from "next/image";
-// import { UpdatePost, DeletePost } from ''
-// import InvoiceStatus from "@/app/ui/posts/status";
-// import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
-// import { fetchFilteredPosts } from "@/app/lib/data";
-import { DeletePost, UpdatePost } from "./buttons";
-import { formatCurrency, formatDateToLocal } from "@/lib/utils";
 import { fetchFilteredPosts } from "./actions";
+import { DeletePost, UpdatePost } from "./buttons";
 
 export default async function InvoicesTable({
   query,
@@ -97,7 +91,7 @@ export default async function InvoicesTable({
                     {post.content}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {post.tags?.map((tag) => {
+                    {post.tags?.map((tag: any) => {
                       return (
                         <div key={tag.id} className="flex items-center gap-3">
                           <p>{tag.name}</p>
