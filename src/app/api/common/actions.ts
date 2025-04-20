@@ -11,6 +11,9 @@ export async function authenticate(
   formData: FormData
 ) {
   try {
+    formData.append("test1", "value1");
+    const formDataObj = Object.fromEntries(formData.entries());
+    console.log("formDataObj", formDataObj);
     await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
