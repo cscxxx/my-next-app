@@ -66,7 +66,7 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
  */
 export const fetchPostsPages = async (query: string) => {
   try {
-    return await prisma.post.count({
+    const count = await prisma.post.count({
       where: {
         OR: [
           { title: { contains: query } },
@@ -89,6 +89,7 @@ export const fetchPostsPages = async (query: string) => {
         ],
       },
     });
+    return Math.ceil(count / ITEMS_PER_PAGE);
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch invoices.");
@@ -103,26 +104,26 @@ export async function createPost(prevState: any, formState: FormData) {
   const session = await auth(); // 获取session
   const userId = session?.user?.id; // 获取用户ID
 
-  try {
-    await prisma.post.create({
-      data: {
-        title: title as string,
-        content: content as string,
-        published: Boolean(published),
-        author: {
-          connect: { id: Number(userId) },
-        },
-        tags: {
-          connect: tags.map((tagId) => ({ id: Number(tagId) })),
-        },
+  // try {
+  await prisma.post.create({
+    data: {
+      title: title as string,
+      content: content as string,
+      published: Boolean(published),
+      author: {
+        connect: { id: Number(userId) },
       },
-    });
-  } catch (error) {
-    console.log("Error creating tag:", error);
-    return {
-      message: "Failed to create tag",
-    };
-  }
+      tags: {
+        connect: tags.map((tagId) => ({ id: Number(tagId) })),
+      },
+    },
+  });
+  // } catch (error) {
+  //   console.log("Error creating tag:", error);
+  //   return {
+  //     message: "Failed to create tag",
+  //   };
+  // }
 
   revalidatePath("/auth-page/posts");
   redirect("/auth-page/posts");

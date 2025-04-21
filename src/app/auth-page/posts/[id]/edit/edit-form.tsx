@@ -7,7 +7,7 @@ export default function EditForm({ post, allTags }: any) {
   return (
     <form action={formAction}>
       <fieldset className="grid grid-cols-1 ">
-        <input type="hidden" name="id" value={post.id} />{" "}
+        <input type="hidden" name="id" value={post.id} />
         {/* 添加隐藏的id字段 */}
         <label htmlFor="title">
           标题:
@@ -78,6 +78,8 @@ export default function EditForm({ post, allTags }: any) {
               minWidth: "300px",
               maxWidth: "800px",
               minHeight: "100px",
+              width: "100%",
+              height: "400px",
             }}
             defaultValue={post.content}
           ></textarea>

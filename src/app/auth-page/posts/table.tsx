@@ -30,25 +30,29 @@ export default async function InvoicesTable({
                         height={28}
                         alt={`${post.name}'s profile picture`}
                       /> */}
-                      <p>{post.authorId}</p>
+                      <p className="mr-2 rounded-sm">{post?.author.name}</p>
+                      <p>{`${post.title}`}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{post.authorId}</p>
+                    <p className="text-sm text-gray-500">{post.author.email}</p>
                   </div>
-                  <div>{post.published}</div>
+                  <div>{post.published ? "已发布" : " 未发布"}</div>
                   {/* <InvoiceStatus status={post.status} /> */}
                 </div>
-                {/* <div className="flex w-full items-center justify-between pt-4">
+                <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(post.amount)}
+                      {/* {formatCurrency(post.amount)} */}
                     </p>
-                    <p>{formatDateToLocal(post.date)}</p>
+                    {/* <p>{formatDateToLocal(post.date)}</p> */}
+                    {post.content && post.content?.length > 20
+                      ? post.content.slice(0, 20) + "..."
+                      : post.content}
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdatePost id={post.id} />
                     <DeletePost id={post.id} />
                   </div>
-                </div> */}
+                </div>
               </div>
             ))}
           </div>
@@ -87,8 +91,11 @@ export default async function InvoicesTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">{post.title}</td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {post.content}
+                  <td className="whitespace-nowrap px-3 py-3 overflow-ellipsis ">
+                    {/* { post?.content?.length > 20 ? post?.content.slice(0, 20):post?.content} */}
+                    {post.content && post.content?.length > 20
+                      ? post.content.slice(0, 20) + "..."
+                      : post.content}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {post.tags?.map((tag: any) => {

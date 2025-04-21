@@ -81,7 +81,10 @@ export default function CreateTag() {
               minWidth: "300px",
               maxWidth: "800px",
               minHeight: "100px",
+              width: "100%",
+              height: "400px",
             }}
+            maxLength={100}
           ></textarea>
         </label>
 
