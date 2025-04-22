@@ -99,7 +99,7 @@ export const fetchPostsPages = async (query: string) => {
 export async function createPost(prevState: any, formState: FormData) {
   const title = formState.get("title");
   const content = formState.get("content");
-  const published = formState.get("published");
+  const published = formState.get("published") === "true" ? true : false;
   const tags = formState.getAll("tags") || [];
   const session = await auth(); // 获取session
   const userId = session?.user?.id; // 获取用户ID
