@@ -28,6 +28,7 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
             tags: {
               some: {
                 OR: [
+                  { id: { equals: Number(query) } },
                   { name: { contains: query } },
                   { desc: { contains: query } },
                 ],
@@ -96,11 +97,16 @@ export const fetchPostsPages = async (query: string) => {
   }
 };
 
-export async function createPost(prevState: any, formState: FormData) {
-  const title = formState.get("title");
-  const content = formState.get("content");
-  const published = formState.get("published") === "true" ? true : false;
-  const tags = formState.getAll("tags") || [];
+export async function createPost(data: {
+  title: string;
+  content: string;
+  published?: boolean;
+  tags?: string[] | undefined;
+}) {
+  const title = data.title;
+  const content = data.content;
+  const published = data.published;
+  const tags = data.tags?.map((item) => Number(item)) || [];
   const session = await auth(); // 获取session
   const userId = session?.user?.id; // 获取用户ID
 
