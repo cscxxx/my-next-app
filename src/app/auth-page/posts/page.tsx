@@ -1,12 +1,12 @@
-import { Suspense } from "react";
-import { Metadata } from "next";
 import { lusitana } from "@/components/fonts";
-import Search from "./search";
-import { CreatePost } from "./buttons";
 import { PostTableSkeleton } from "@/components/skeletons";
-import Table from "./table";
+import { Metadata } from "next";
+import { Suspense } from "react";
 import { fetchPostsPages } from "./actions";
+import { CreatePost } from "./buttons";
 import Pagination from "./pagination";
+import Search from "./search";
+import Table from "./table";
 
 export const metadata: Metadata = {
   title: "Posts",

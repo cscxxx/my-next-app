@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { PostFormSchema } from "./type";
 
 const ITEMS_PER_PAGE = 5;
 /**
@@ -13,7 +14,6 @@ const ITEMS_PER_PAGE = 5;
  */
 export async function fetchFilteredPosts(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
   try {
     return prisma.post.findMany({
       take: ITEMS_PER_PAGE,
@@ -53,6 +53,10 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
             desc: true,
           },
         },
+      },
+      // 按照创建时间倒序排序
+      orderBy: {
+        date: "desc",
       },
     });
   } catch (error) {
@@ -97,12 +101,7 @@ export const fetchPostsPages = async (query: string) => {
   }
 };
 
-export async function createPost(data: {
-  title: string;
-  content: string;
-  published?: boolean;
-  tags?: string[] | undefined;
-}) {
+export async function createPost(data: PostFormSchema) {
   const title = data.title;
   const content = data.content;
   const published = data.published;
@@ -170,12 +169,12 @@ export async function getPostById(id: number) {
   }
 }
 
-export async function updatePost(prevState: any, formState: FormData) {
-  const id = formState.get("id");
-  const title = formState.get("title");
-  const content = formState.get("content");
-  const published = formState.get("published");
-  const tags = formState.getAll("tags") || []; // 确保tags始终是数组
+export async function updatePost(formState: PostFormSchema & { id: number }) {
+  const id = formState.id;
+  const title = formState.title;
+  const content = formState.content;
+  const published = formState.published;
+  const tags = formState.tags || []; // 确保tags始终是数组
 
   try {
     const post = await prisma.post.findUnique({
