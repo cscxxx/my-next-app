@@ -149,7 +149,7 @@ export default function PostForm({
                           />
                         </FormControl>
                         <FormLabel className="cursor-pointer leading-[16px] h-[16px] !m-0 pl-1">
-                          {item.desc}
+                          {item.name}
                         </FormLabel>
                       </FormItem>
                     )}
@@ -203,6 +203,7 @@ export default function PostForm({
                         "code",
                         "help",
                         "wordcount",
+                        "codesample",
                       ],
                       toolbar:
                         "undo redo | blocks | " +

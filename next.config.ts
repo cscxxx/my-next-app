@@ -10,11 +10,11 @@ const nextConfig: NextConfig = {
   //   );
   //   return config;
   // },
-  resolve: {
-    alias: {
-      "react-hook-form": require.resolve("react-hook-form"),
-    },
-  },
+  // resolve: {
+  //   alias: {
+  //     "react-hook-form": require.resolve("react-hook-form"),
+  //   },
+  // },
 };
 
 export default nextConfig;

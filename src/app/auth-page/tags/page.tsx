@@ -5,7 +5,7 @@ import { CreateTag, DeleteTag, UpdateTag } from "./buttons";
 export default async function Tags() {
   const tags = await getTags();
   return (
-    <div>
+    <>
       <CreateTag></CreateTag>
       {tags.map((tag) => {
         return (
@@ -28,6 +28,6 @@ export default async function Tags() {
           </ul>
         );
       })}
-    </div>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 // "use client";
 import bcrypt from "bcrypt";
+import Image from "next/image";
 
 export default function Page() {
   const password = "123456";
@@ -14,6 +15,13 @@ export default function Page() {
 
   return (
     <div>
+      <Image
+        src={"/react-icon.svg"}
+        alt={"react-icon"}
+        color="#404756"
+        width={100}
+        height={100}
+      />
       Test2 Page
       <button
       // onClick={async () => {

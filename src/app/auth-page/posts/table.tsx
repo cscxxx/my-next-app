@@ -97,7 +97,7 @@ export default async function InvoicesTable({
                       ? post.content.slice(0, 20) + "..."
                       : post.content}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td className="whitespace-nowrap px-3 py-3" key={"tags"}>
                     {post.tags?.map((tag: any) => {
                       return (
                         <div key={tag.id} className="flex items-center gap-3">

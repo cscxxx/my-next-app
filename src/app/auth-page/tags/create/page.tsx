@@ -14,6 +14,9 @@ export default function CreateTag() {
       <input type="text" name="name" required className="border"></input>
       <label htmlFor="desc">描述</label>
       <input type="text" name="desc" className="border"></input>
+      {/* <input type="select" >  </input>
+       */}
+      {/* 图标 */}
       <button
         type="submit"
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

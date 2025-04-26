@@ -8,11 +8,16 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import Image from "next/image";
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
+const ReactIcon = () => {
+  return <Image src="/react-icon.svg" alt="" width={30} height={30} />;
+};
+
 const links = [
-  { name: "test1", href: "/main-page/test1", icon: HomeIcon },
+  { name: "test1", href: "/main-page/test1", icon: ReactIcon },
   {
     name: "test2",
     href: "/main-page/test2",
