@@ -182,8 +182,9 @@ export default function PostForm({
                     initialValue={post?.content ?? ""}
                     onEditorChange={(content) => field.onChange(content)}
                     init={{
-                      height: 500,
+                      // height: 500,
                       menubar: true,
+                      branding: false,
                       plugins: [
                         "advlist",
                         "autolink",
@@ -211,7 +212,7 @@ export default function PostForm({
                         "alignright alignjustify | bullist numlist outdent indent | " +
                         "removeformat | help",
                       content_style:
-                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
                     }}
                   />
                 </div>

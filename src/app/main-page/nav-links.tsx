@@ -17,7 +17,8 @@ const ReactIcon = () => {
 };
 
 const links = [
-  { name: "test1", href: "/main-page/test1", icon: ReactIcon },
+  { name: "Posts", href: "/main-page/posts-view", icon: HomeIcon },
+  { name: "test1", href: "/main-page/test1", icon: HomeIcon },
   {
     name: "test2",
     href: "/main-page/test2",
@@ -34,7 +35,7 @@ const links = [
 export default function NavLinks() {
   const pathname = usePathname();
   return (
-    <>
+    <div className="flex items-center gap-2">
       {links.map((link) => {
         const LinkIcon = link.icon;
         return (
@@ -42,7 +43,7 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50  text-sm font-medium hover:bg-sky-100 hover:text-blue-600  p-2 px-3",
+              "flex h-[48px] grow  items-center justify-center gap-2 rounded-md bg-gray-50  text-sm font-medium hover:bg-sky-100 hover:text-blue-600 p-2 px-3",
               {
                 "bg-sky-100 text-blue-600": pathname === link.href,
               }
@@ -54,6 +55,6 @@ export default function NavLinks() {
           </Link>
         );
       })}
-    </>
+    </div>
   );
 }

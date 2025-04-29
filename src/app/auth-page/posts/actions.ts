@@ -161,6 +161,7 @@ export async function getPostById(id: number) {
       where: { id: id },
       include: {
         tags: true,
+        author: true,
       },
     });
     return post;
