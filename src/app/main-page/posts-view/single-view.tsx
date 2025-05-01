@@ -1,11 +1,17 @@
 "use client";
-import { Suspense, useCallback, useRef } from "react";
-import { Editor as TinyMCEEditor } from "tinymce";
-import ReadEditor from "./read-editor";
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+} from "@heroicons/react/24/outline";
+import { RefObject, useRef } from "react";
+import { useFullscreen, useToggle } from "react-use";
 
 export default function Page({ post }: any) {
-  const editorRef = useRef<TinyMCEEditor | null>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const [show, toggle] = useToggle(false);
+  const isNotFullscreen = useFullscreen(viewRef as RefObject<Element>, show, {
+    onClose: () => toggle(false),
+  });
 
   // 新增格式化函数
   const formatDate = (dateStr: string) => {
@@ -16,54 +22,46 @@ export default function Page({ post }: any) {
     });
   };
 
-  const toggleFullscreen = useCallback(() => {
-    if (editorRef.current) {
-      // 切换全屏状态
-      editorRef.current.execCommand("mceFullScreen");
-      // 添加 ESC 按键监听退出
-      editorRef.current.on("keydown", (e: KeyboardEvent) => {
-        if (
-          e.key === "Escape" &&
-          editorRef.current?.plugins?.fullscreen?.isFullscreen()
-        ) {
-          editorRef.current.execCommand("mceFullScreen");
-        }
-      });
-    }
-    return () => {
-      if (editorRef.current) {
-        // 移除 ESC 按键监听
-        editorRef.current.off("keydown");
-      }
-    };
-  }, [editorRef.current]);
-
   return (
-    <div key={post.id} className=" rounded-lg ">
-      <div className="flex items-center space-x-10 h-[60px] mt-[10px] bg-[#e1f2fe] rounded-lg ">
-        <div className="text-[30px] pl-5">{post.title}</div>
+    <div
+      ref={viewRef}
+      key={post.id}
+      className="relative rounded-lg border-[2px] mb-5 p-2 hover:border-[#2464e8] bg-white "
+    >
+      <div className="flex items-center space-x-10 h-[40px]">
+        <div className="text-[30px] text-center ">{post.title}</div>
         {post.tags.map((tag: any) => {
           return (
-            <span key={tag.id} className="px-[6px]">
+            <span key={tag.id} className="">
               {tag.name}
             </span>
           );
         })}
         <div>{post.author.name}</div>
         <div>{post?.date && formatDate(post.date.toString())}</div>
-        <ArrowsPointingOutIcon
-          onClick={toggleFullscreen}
-          className="hover:bg-sky-100 hover:text-blue-600 m-2 w-[20px]"
-        />
+        {isNotFullscreen ? (
+          <ArrowsPointingInIcon
+            onClick={toggle}
+            className="hover:bg-sky-100 hover:text-blue-600 m-2 w-[20px] hover:scale-[1.2]  cursor-pointer rounded-sm "
+          />
+        ) : (
+          <ArrowsPointingOutIcon
+            onClick={toggle}
+            className="hover:bg-sky-100 hover:text-blue-600 m-2 w-[20px] hover:scale-[1.2]  cursor-pointer rounded-sm "
+          />
+        )}
+        {/* <ArrowsPointingOutIcon
+          onClick={toggle}
+          className="hover:bg-sky-100 hover:text-blue-600 m-2 w-[20px] hover:scale-[1.2]  cursor-pointer "
+        /> */}
       </div>
-      <Suspense fallback={<div>加载编辑器...</div>}>
-        <ReadEditor
-          onInit={(_, editor) => {
-            editorRef.current = editor; // 直接通过 onInit 回调设置
-          }}
-          content={post.content}
-        />
-      </Suspense>
+      <div className="absolute left-0 right-0 border-t border-gray-300 w-full" />
+      <div
+        className="pt-2"
+        dangerouslySetInnerHTML={{
+          __html: post.content,
+        }}
+      />
     </div>
   );
 }

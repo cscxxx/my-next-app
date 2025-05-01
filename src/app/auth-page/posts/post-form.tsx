@@ -13,13 +13,18 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Post, Tag } from "@prisma/client";
-import { Editor } from "@tinymce/tinymce-react";
 import clsx from "clsx";
-import { Suspense, useState } from "react";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createPost, updatePost } from "./actions";
 import { postFormSchema } from "./type";
+// 添加动态加载
+const Editor = dynamic(
+  () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
+  { ssr: false }
+);
 
 export default function PostForm({
   tags,
@@ -28,8 +33,6 @@ export default function PostForm({
   tags?: Tag[];
   post?: (Post & { tags?: Tag[] }) | null | undefined;
 }) {
-  // 在组件顶部添加状态
-  const [isEditorReady, setIsEditorReady] = useState(false);
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
     defaultValues: {
@@ -167,24 +170,25 @@ export default function PostForm({
               {/* <FormLabel>Content</FormLabel> */}
               <FormControl>
                 <div>
-                  {/* {!isEditorReady && (
-                    <div className="h-[500px] flex items-center justify-center bg-gray-100 rounded">
-                      编辑器加载中...
-                    </div>
-                  )} */}
                   <Editor
-                    scriptLoading={{
-                      //   async: true,
-                      defer: true,
-                      //   delay: 1000,
-                    }}
+                    scriptLoading={
+                      {
+                        //   async: true,
+                        // defer: true,
+                        //   delay: 1000,
+                      }
+                    }
                     apiKey="wjch2w8wj3lfna049cka51n2r8u2u4y9uanqwadks86758c2"
                     initialValue={post?.content ?? ""}
                     onEditorChange={(content) => field.onChange(content)}
+                    // selectors="textarea"
                     init={{
-                      // height: 500,
+                      height: 500,
                       menubar: true,
                       branding: false,
+                      // theme: "dark",
+                      // theme_url:
+                      //   "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css",
                       plugins: [
                         "advlist",
                         "autolink",
@@ -210,9 +214,17 @@ export default function PostForm({
                         "undo redo | blocks | " +
                         "bold italic forecolor | alignleft aligncenter " +
                         "alignright alignjustify | bullist numlist outdent indent | " +
-                        "removeformat | help",
-                      content_style:
-                        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px}",
+                        "removeformat |  codesample",
+                      // codesample_content_css:
+                      //   "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css",
+                      // codesample_languages: [
+                      //   { text: "HTML/XML", value: "markup" },
+                      //   { text: "JavaScript", value: "javascript" },
+                      //   { text: "CSS", value: "css" },
+                      //   { text: "Python", value: "python" },
+                      //   { text: "Java", value: "java" },
+                      //   { text: "C++", value: "cpp" },
+                      // ],
                     }}
                   />
                 </div>
