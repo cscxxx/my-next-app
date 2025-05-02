@@ -5,17 +5,23 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { PostFormSchema } from "./type";
 
-const ITEMS_PER_PAGE = 5;
+let ITEMS_PER_PAGE = 5 as number | undefined;
 /**
  * 模糊查询所有文章
  * @param query
  * @param currentPage
  * @returns
  */
-export async function fetchFilteredPosts(query: string, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+export async function fetchFilteredPosts(query: string, currentPage?: number) {
+  let offset;
+  if (currentPage && ITEMS_PER_PAGE) {
+    offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  } else {
+    offset = undefined;
+    ITEMS_PER_PAGE = undefined;
+  }
   try {
-    return prisma.post.findMany({
+    return prisma?.post?.findMany({
       take: ITEMS_PER_PAGE,
       skip: offset,
       where: {
@@ -28,7 +34,7 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
             tags: {
               some: {
                 OR: [
-                  { id: { equals: Number(query) } },
+                  // { id: { equals: Number(query) } },
                   { name: { contains: query } },
                   { desc: { contains: query } },
                 ],
