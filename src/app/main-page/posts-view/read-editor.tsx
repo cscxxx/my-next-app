@@ -41,6 +41,7 @@ const ReadEditor = forwardRef<TinyMCEEditor, ReadEditorProps>(
             statusbar: false,
             branding: false,
             resize: false,
+            skin: "borderless",
             ...props.init,
           }}
           initialValue={content ?? ""}

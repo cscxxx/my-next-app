@@ -183,6 +183,7 @@ export default function PostForm({
                     onEditorChange={(content) => field.onChange(content)}
                     // selectors="textarea"
                     init={{
+                      inline_styles: true,
                       height: 500,
                       menubar: true,
                       branding: false,
