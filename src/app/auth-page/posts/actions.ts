@@ -100,6 +100,9 @@ export const fetchPostsPages = async (query: string) => {
         ],
       },
     });
+    if (!count || !ITEMS_PER_PAGE) {
+      return 1;
+    }
     return Math.ceil(count / ITEMS_PER_PAGE);
   } catch (error) {
     console.error("Database Error:", error);
@@ -176,7 +179,9 @@ export async function getPostById(id: number) {
   }
 }
 
-export async function updatePost(formState: PostFormSchema & { id: number }) {
+export async function updatePost(
+  formState: (PostFormSchema & { id: number }) | any
+) {
   const id = formState.id;
   const title = formState.title;
   const content = formState.content;
@@ -202,7 +207,7 @@ export async function updatePost(formState: PostFormSchema & { id: number }) {
         published: Boolean(published),
         tags: {
           // set: [], // 清空现有标签
-          set: tags.map((tagId) => ({ id: Number(tagId) })),
+          set: tags.map((tagId: any) => ({ id: Number(tagId) })),
         },
       },
     });

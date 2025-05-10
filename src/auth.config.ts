@@ -42,7 +42,11 @@ export const authConfig = {
     },
     async session({ session, token }) {
       if (token) {
-        session.user = { ...session.user, ...token };
+        session.user = {
+          ...session.user,
+          ...token,
+          email: token.email ?? "", // Ensure email is a string
+        };
       }
       return session;
     },

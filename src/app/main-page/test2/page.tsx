@@ -3,15 +3,15 @@ import bcrypt from "bcrypt";
 import Image from "next/image";
 
 export default function Page() {
-  const password = "123456";
-  const saltRounds = 10; // 盐的迭代次数，数值越高越安全但耗时越长
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    if (err) {
-      console.error("Failed to hash password:", err);
-    } else {
-      console.log("Hashed Password:", hash);
-    }
-  });
+  // const password = "123456";
+  // const saltRounds = 10; // 盐的迭代次数，数值越高越安全但耗时越长
+  // bcrypt.hash(password, saltRounds, (err, hash) => {
+  //   if (err) {
+  //     console.error("Failed to hash password:", err);
+  //   } else {
+  //     console.log("Hashed Password:", hash);
+  //   }
+  // });
 
   return (
     <div>
