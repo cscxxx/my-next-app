@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
   // sassOptions: {
   //   implementation: require("sass"),
   // },
+  // dbCredentials: {
+  //   connectionString: process.env.DATABASE_URL!,
+  // },
+  // 环境变量
+  env: {
+    DATABASE_URL: process.env.DATABASE_URL,
+  },
 };
 
 export default nextConfig;
