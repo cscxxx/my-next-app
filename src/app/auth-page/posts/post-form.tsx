@@ -10,29 +10,75 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Editor, { OnMount } from "@monaco-editor/react";
 import { Post, Tag } from "@prisma/client";
+import { enumToArray } from "@shuchaoxxx/csc-utils";
 import clsx from "clsx";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { Suspense, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createPost, updatePost } from "./actions";
 import { postFormSchema } from "./type";
 // 添加动态加载
-const Editor = dynamic(
-  () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
-  { ssr: false }
-);
+// const Editor = dynamic(
+//   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
+//   { ssr: false }
+// );
+
+type EditorInstance = Parameters<OnMount>[0];
+type MonacoInstance = Parameters<OnMount>[1];
+
+enum Language {
+  markdown = "markdown",
+  javascript = "javascript",
+  typescript = "typescript",
+  html = "html",
+  css = "css",
+}
 
 export default function PostForm({
   tags,
   post,
 }: {
   tags?: Tag[];
-  post?: (Post & { tags?: Tag[] }) | null | undefined;
+  post?:
+    | (Post & { tags?: Tag[]; language?: string; fileName?: string })
+    | null
+    | undefined;
 }) {
+  const [fileArr, setFileArr] = useState<
+    {
+      id: string;
+      name: string;
+      language: string;
+      value: string;
+    }[]
+  >([
+    {
+      id: uuidv4(),
+      name: "markdown.md",
+      language: Language["markdown"],
+      value: "## 1",
+    },
+  ]);
+
+  const [currentFile, setCurrentFile] = useState<{
+    id: string;
+    name: string;
+    language: string;
+    value: string;
+  }>(fileArr[0]);
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
     defaultValues: {
@@ -40,22 +86,55 @@ export default function PostForm({
       content: post?.content ?? "",
       published: post?.published ?? false,
       tags: post?.tags?.map((tag) => tag.id.toString()) ?? [],
+      language: undefined,
+      fileName: undefined,
+      files: fileArr,
     },
   });
+  const editorRef = useRef<EditorInstance | null>(null);
+  const monacoRef = useRef<MonacoInstance | null>(null);
+  const handleSave = () => {
+    const value = editorRef.current?.getValue();
+    console.log("保存内容:", value);
+    // 实际保存逻辑...
+  };
+  const handleEditorMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
+    monacoRef.current = monaco;
+    // 注册保存命令
+    editor.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+      () => {
+        handleSave();
+        return null; // 阻止默认
+      },
+      "custom.save"
+    );
 
-  if (post) {
-  }
-  console.log(12);
+    // 类型安全的命令扩展
+    monaco.editor.addEditorAction({
+      id: "enhanced-save",
+      label: "智能保存",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+      contextMenuGroupId: "file",
+      contextMenuOrder: 1,
+      run: (ed) => {
+        handleSave();
+        ed.getAction("editor.action.formatDocument")?.run(); // 保存时自动格式化
+      },
+    });
+  };
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          if (post?.id) {
-            updatePost({ ...data, id: post.id });
-          } else {
-            createPost(data);
-          }
+          console.log(data);
+          // if (post?.id) {
+          //   updatePost({ ...data, id: post.id });
+          // } else {
+          //   createPost(data);
+          // }
         })}
       >
         <div className="flex items-center py-2">
@@ -100,9 +179,7 @@ export default function PostForm({
           </div>
           <div className="w-[100px] text-center ">
             <Suspense fallback={<div>loading</div>}>
-              <Button type="submit" className="">
-                Submit
-              </Button>
+              <Button type="submit">Submit</Button>
             </Suspense>
           </div>
         </div>
@@ -162,73 +239,165 @@ export default function PostForm({
             </FormItem>
           )}
         />
+        <div className=" flex items-center gap-2 mb-2 ">
+          <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+              <FormItem>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue=""
+                >
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {enumToArray(Language).map((item) => {
+                      return (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="fileName"
+            render={({ field }) => (
+              <FormItem>
+                {/* <FormLabel>Title</FormLabel> */}
+                <FormControl>
+                  <Input placeholder="文件名..." {...field} />
+                </FormControl>
+                {/* <FormDescription>
+                This is your public display name.
+              </FormDescription> */}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div
+            className=" w-[60px] border-2 text-center"
+            onClick={() => {
+              const name = form.getValues()?.fileName;
+              const language = form.getValues()?.language;
+              if (
+                name &&
+                fileArr.map((item) => item.name).includes(name as string)
+              ) {
+                alert("文件已存在");
+                return;
+              }
+              if (name === "") {
+                alert("文件名为空");
+                return;
+              }
+              if (name && language) {
+                setFileArr([
+                  ...fileArr,
+                  {
+                    id: uuidv4(),
+                    name: name,
+                    language: language,
+                    value: "",
+                  },
+                ]);
+              }
+              form.setValue("fileName", "");
+              form.setValue("language", "");
+            }}
+          >
+            添加
+          </div>
+        </div>
+        <div className="flex  items-center mb-2">
+          {fileArr.map((item, index) => {
+            return (
+              <div
+                className={clsx(
+                  "border-2 p-1 flex items-center mr-4 hover:border-indigo-600 cursor-pointer",
+                  {
+                    "border-indigo-600": currentFile.id === item.id,
+                  }
+                )}
+                key={item.id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  // 关闭默认冒泡事件
+                  e.stopPropagation();
+                  setCurrentFile(item);
+                }}
+              >
+                <div className="cursor-pointer">{item.name}</div>
+                {fileArr.length > 1 && index !== 0 && (
+                  <XMarkIcon
+                    className="h-4 w-4 ml-1 cursor-pointer hover:text-red-500"
+                    aria-hidden="true"
+                    onClick={(e) => {
+                      if (fileArr.length === 1) {
+                        return;
+                      }
+                      const filtedList = fileArr.filter(
+                        (file) => file.id !== item.id
+                      );
+                      setFileArr(filtedList);
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setCurrentFile(fileArr[0]);
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
         <FormField
           control={form.control}
           name="content"
           render={({ field }) => (
             <FormItem>
-              {/* <FormLabel>Content</FormLabel> */}
+              <FormLabel>Content</FormLabel>
               <FormControl>
-                <div>
-                  <Editor
-                    scriptLoading={
-                      {
-                        //   async: true,
-                        // defer: true,
-                        //   delay: 1000,
-                      }
-                    }
-                    apiKey="wjch2w8wj3lfna049cka51n2r8u2u4y9uanqwadks86758c2"
-                    initialValue={post?.content ?? ""}
-                    onEditorChange={(content) => field.onChange(content)}
-                    // selectors="textarea"
-                    init={{
-                      inline_styles: true,
-                      height: 500,
-                      menubar: true,
-                      branding: false,
-                      // theme: "dark",
-                      // theme_url:
-                      //   "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css",
-                      plugins: [
-                        "advlist",
-                        "autolink",
-                        "lists",
-                        "link",
-                        "image",
-                        "charmap",
-                        "preview",
-                        "anchor",
-                        "searchreplace",
-                        "visualblocks",
-                        "code",
-                        "fullscreen",
-                        "insertdatetime",
-                        "media",
-                        "table",
-                        "code",
-                        "help",
-                        "wordcount",
-                        "codesample",
-                      ],
-                      toolbar:
-                        "undo redo | blocks | " +
-                        "bold italic forecolor | alignleft aligncenter " +
-                        "alignright alignjustify | bullist numlist outdent indent | " +
-                        "removeformat |  codesample",
-                      // codesample_content_css:
-                      //   "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css",
-                      // codesample_languages: [
-                      //   { text: "HTML/XML", value: "markup" },
-                      //   { text: "JavaScript", value: "javascript" },
-                      //   { text: "CSS", value: "css" },
-                      //   { text: "Python", value: "python" },
-                      //   { text: "Java", value: "java" },
-                      //   { text: "C++", value: "cpp" },
-                      // ],
-                    }}
-                  />
-                </div>
+                <Editor
+                  height="40vh"
+                  theme="vs-dark"
+                  options={{
+                    // readOnly: true,
+                    minimap: {
+                      enabled: false,
+                    },
+                    fontSize: 14,
+                    automaticLayout: true,
+                    formatOnPaste: true,
+                    formatOnType: true,
+                  }}
+                  onMount={handleEditorMount}
+                  path={currentFile.name}
+                  // defaultLanguage={currentFile.language}
+                  language={currentFile.language}
+                  defaultValue={currentFile.value}
+                  // value={currentFile.value}
+                  onChange={(value) => {
+                    setFileArr(
+                      fileArr.map((file) => {
+                        if (file.id === currentFile.id) {
+                          return {
+                            ...file,
+                            value: value ?? "",
+                          };
+                        }
+                        return file;
+                      })
+                    );
+                    form.setValue("files", fileArr);
+                  }}
+                />
               </FormControl>
               {/* <FormDescription>
                 This is your public display name.

@@ -113,6 +113,7 @@ export const fetchPostsPages = async (query: string) => {
 export async function createPost(data: PostFormSchema) {
   const title = data.title;
   const content = data.content;
+  const files = data.files;
   const published = data.published;
   const tags = data.tags?.map((item) => Number(item)) || [];
   const session = await auth(); // 获取session
