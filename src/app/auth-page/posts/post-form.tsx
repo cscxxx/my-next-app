@@ -31,6 +31,7 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createPost, updatePost } from "./actions";
 import { Language, postFormSchema } from "./type";
+import { md } from "@/lib/utils";
 // 添加动态加载
 const Editor = dynamic(
   () => import("@monaco-editor/react").then((mod) => mod.Editor),
@@ -364,7 +365,6 @@ export default function PostForm({
                   height="50vh"
                   theme="vs-dark"
                   options={{
-                    // readOnly: true,
                     minimap: {
                       enabled: false,
                     },
@@ -378,7 +378,6 @@ export default function PostForm({
                   language={currentFile.language}
                   defaultValue={currentFile.value}
                   onChange={(value) => {
-                    console.log("value:", value);
                     setFileArr(
                       fileArr.map((file) => {
                         if (file.id === currentFile.id) {
@@ -396,6 +395,12 @@ export default function PostForm({
               <FormMessage />
             </FormItem>
           )}
+        />
+        <div
+          className="markdown-content p-2 overflow-auto"
+          dangerouslySetInnerHTML={{
+            __html: md.render(fileArr[0]?.value ?? ""),
+          }}
         />
       </form>
     </Form>

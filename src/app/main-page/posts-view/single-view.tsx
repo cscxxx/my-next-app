@@ -1,21 +1,17 @@
 "use client";
+import { Language } from "@/app/auth-page/posts/type";
+import { md } from "@/lib/utils";
 import {
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
-} from "@heroicons/react/24/outline";
-import { Post, Tag, User, File } from "@prisma/client";
-import dynamic from "next/dynamic";
-import { RefObject, useRef, useState } from "react";
-import { useFullscreen, useToggle } from "react-use";
-import {
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
+import { File, Post, Tag, User } from "@prisma/client";
 import clsx from "clsx";
-import markdownit from "markdown-it";
-import hljs from "highlight.js";
-import "highlight.js/styles/github.css";
-import { Language } from "@/app/auth-page/posts/type";
+import dynamic from "next/dynamic";
+import { RefObject, useRef, useState } from "react";
+import { useFullscreen, useToggle } from "react-use";
 // 添加动态加载
 const Editor = dynamic(
   () => import("@monaco-editor/react").then((mod) => mod.Editor),
@@ -24,7 +20,11 @@ const Editor = dynamic(
 export default function Index({
   post,
 }: {
-  post: Post & { tags: Tag[] } & { author: User } & { files: File[] };
+  post: Post & {
+    tags: Tag[];
+    author: User;
+    files: File[];
+  };
 }) {
   const [current, setCurrent] = useState<File>(post["files"][0]);
 
@@ -33,18 +33,7 @@ export default function Index({
   const isNotFullscreen = useFullscreen(viewRef as RefObject<Element>, show, {
     onClose: () => toggle(false),
   });
-  // 配置markdown-it
-  const md = markdownit({
-    html: true,
-    highlight: function (str, lang) {
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          return hljs.highlight(str, { language: lang }).value;
-        } catch (__) {}
-      }
-      return ""; // 使用默认处理
-    },
-  });
+
   // 新增格式化函数
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("zh-CN", {
@@ -53,6 +42,7 @@ export default function Index({
       day: "2-digit",
     });
   };
+
   // 新增字体大小状态
   const [fontSize, setFontSize] = useState(14);
 
@@ -145,7 +135,7 @@ export default function Index({
           <div className="p-2 rounded-md">
             <Editor
               height={
-                isNotFullscreen ? "calc(100vh - 128px)" : "calc(100vh - 200px)"
+                isNotFullscreen ? "calc(100vh - 128px)" : "calc(100vh - 210px)"
               }
               theme="vs-dark"
               defaultValue={post?.files?.[0]?.value ?? ""}

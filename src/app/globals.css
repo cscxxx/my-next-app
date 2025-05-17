@@ -71,3 +71,102 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* 
+markdown应用块的·
+ */
+.markdown-content blockquote {
+  border-left: 2px solid #009516;
+  margin: 1em 0;
+  line-height: 2em;
+  padding: 0 1em;
+  color: #666666;
+  font-style: italic;
+  background-color: #cfeec5;
+}
+
+/* 表格样式 */
+.markdown-content table {
+  @apply w-full border-collapse my-4;
+}
+.markdown-content h1 {
+  @apply text-2xl font-bold mb-2;
+}
+.markdown-content h2 {
+  @apply text-xl font-bold mb-2;
+}
+.markdown-content h3 {
+  @apply text-lg font-bold mb-2;
+}
+.markdown-content h4 {
+  @apply text-base font-bold mb-2;
+}
+
+.markdown-content th,
+.markdown-content td {
+  @apply border p-2 border-gray-300;
+}
+
+/* 任务列表 */
+.markdown-content .task-list-item {
+  @apply list-none pl-6;
+}
+
+.markdown-content .task-list-item-checkbox {
+  @apply mr-2;
+}
+
+/* 定义列表 */
+.markdown-content dl {
+  @apply my-4;
+}
+
+.markdown-content dt {
+  @apply font-bold mt-2;
+}
+
+.markdown-content dd {
+  @apply ml-4 text-gray-600;
+}
+
+/* 无序列表样式 */
+.markdown-content ul {
+  @apply list-disc pl-8 my-4 !important;
+  /* 支持嵌套列表 */
+  & ul {
+    list-style-type: circle;
+    margin-left: 1.5rem;
+  }
+
+  & ul ul {
+    list-style-type: square;
+  }
+}
+
+/* 有序列表样式 */
+.markdown-content ol {
+  @apply list-decimal pl-8 my-4 !important;
+
+  /* 嵌套数字样式 */
+  & ol {
+    list-style-type: lower-alpha;
+    margin-left: 1.5rem;
+  }
+
+  & ol ol {
+    list-style-type: lower-roman;
+  }
+}
+
+/* 列表项通用样式 */
+.markdown-content li {
+  @apply my-2 leading-7;
+}
+
+/* 修复嵌套列表间距 */
+.markdown-content ul ul,
+.markdown-content ol ol,
+.markdown-content ul ol,
+.markdown-content ol ul {
+  @apply my-0;
+}

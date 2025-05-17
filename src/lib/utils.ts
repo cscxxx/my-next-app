@@ -1,5 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import hljs from "highlight.js";
+import markdownit from "markdown-it";
+import { full as emoji } from "markdown-it-emoji";
 
 type Revenue = {
   month: string;
@@ -77,3 +80,52 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+// markdown 的配置
+
+// 配置markdown-it
+export const md = markdownit({
+  // html: true, // 允许HTML标签
+  linkify: true, // 自动将URL文本转换为链接
+  breaks: true, // 允许回车换行
+  typographer: true,
+  xhtmlOut: true, // 添加XHTML兼容输出
+  // 显式启用blockquote规则（默认已启用）
+  quotes: "“”‘’", // 配置中文引号样式
+  highlight: function (str, lang): any {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return (
+          '<pre><code class="hljs">' +
+          hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+          "</code></pre>"
+        );
+      } catch (__) {}
+    }
+
+    return (
+      '<pre><code class="hljs">' + md.utils.escapeHtml(str) + "</code></pre>"
+    );
+  },
+  // highlight: (code, lang) => {
+  //   if (lang && hljs.getLanguage(lang)) {
+  //     return hljs.highlight(lang, code).value;
+  //   }
+  //   return hljs.highlightAuto(code).value;
+  // },
+})
+  .use(require("markdown-it-abbr"))
+  .use(require("markdown-it-deflist"))
+  .use(emoji)
+  .use(require("markdown-it-footnote"))
+  .use(require("markdown-it-mark"))
+  .use(require("markdown-it-sub"))
+  .use(require("markdown-it-sup"))
+  .use(require("markdown-it-task-checkbox"), {
+    disabled: false,
+    divWrap: false,
+    divClass: "checkbox",
+    idPrefix: "cbx_",
+    ulClass: "task-list",
+    liClass: "task-list-item",
+  });

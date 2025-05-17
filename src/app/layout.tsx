@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// import "highlight.js/styles/github.css";
+import "highlight.js/styles/atom-one-dark.css";
+// import "highlight.js/styles/nord.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      // className="dark"
       // style={{
       //   filter: "invert(1) hue-rotate(180deg)",
       // }}
