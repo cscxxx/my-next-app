@@ -13,15 +13,17 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchPostsPages(query);
-
+  const totalPages = await fetchPostsPages(query, 1);
   return (
     <>
       <Suspense key={query + currentPage} fallback={<PostTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
-      <div className="py-[5px] flex w-full justify-center fixed bottom-[0px] bg-white z-30 ">
-        <Pagination totalPages={totalPages} />
+      <div className="w-full flex items-center justify-center fixed bottom-[0px] z-30 ">
+        <Pagination
+          className=" p-2 rounded bg-white "
+          totalPages={totalPages}
+        />
       </div>
     </>
   );

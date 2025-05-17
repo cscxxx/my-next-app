@@ -1,8 +1,8 @@
 "use server";
+import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
 import { PostFormSchema } from "./type";
 
 let ITEMS_PER_PAGE = 5 as number | undefined;
@@ -12,17 +12,21 @@ let ITEMS_PER_PAGE = 5 as number | undefined;
  * @param currentPage
  * @returns
  */
-export async function fetchFilteredPosts(query: string, currentPage?: number) {
+export async function fetchFilteredPosts(
+  query: string,
+  currentPage?: number,
+  pageSize: number | undefined = 5
+) {
   let offset;
-  if (currentPage && ITEMS_PER_PAGE) {
-    offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  if (currentPage && pageSize) {
+    offset = (currentPage - 1) * pageSize;
   } else {
     offset = undefined;
-    ITEMS_PER_PAGE = undefined;
+    pageSize = undefined;
   }
   try {
     return prisma?.post?.findMany({
-      take: ITEMS_PER_PAGE,
+      take: pageSize,
       skip: offset,
       where: {
         OR: [
@@ -55,8 +59,14 @@ export async function fetchFilteredPosts(query: string, currentPage?: number) {
         },
         tags: {
           select: {
+            id: true,
             name: true,
             desc: true,
+          },
+        },
+        files: {
+          orderBy: {
+            sort: "asc",
           },
         },
       },
@@ -67,7 +77,7 @@ export async function fetchFilteredPosts(query: string, currentPage?: number) {
     });
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch invoices.");
+    throw new Error("Failed to fetch posts.");
   }
 }
 /**
@@ -75,7 +85,7 @@ export async function fetchFilteredPosts(query: string, currentPage?: number) {
  * @param query 模糊查询的关键字
  * @returns
  */
-export const fetchPostsPages = async (query: string) => {
+export const fetchPostsPages = async (query: string, pageSize: number = 5) => {
   try {
     const count = await prisma.post.count({
       where: {
@@ -100,13 +110,13 @@ export const fetchPostsPages = async (query: string) => {
         ],
       },
     });
-    if (!count || !ITEMS_PER_PAGE) {
+    if (!count || !pageSize) {
       return 1;
     }
-    return Math.ceil(count / ITEMS_PER_PAGE);
+    return Math.ceil(count / pageSize);
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch invoices.");
+    throw new Error("Failed to fetch posts pages.");
   }
 };
 
@@ -130,6 +140,14 @@ export async function createPost(data: PostFormSchema) {
       },
       tags: {
         connect: tags.map((tagId) => ({ id: Number(tagId) })),
+      },
+      files: {
+        create: files.map((file, index) => ({
+          name: file.name,
+          language: file.language,
+          value: file.value,
+          sort: index + 1,
+        })),
       },
     },
   });
@@ -156,6 +174,9 @@ export async function getAllTags() {
 
 export async function deletePost(id: number) {
   try {
+    await prisma.file.deleteMany({
+      where: { postId: id },
+    });
     await prisma.post.delete({
       where: { id: id },
     });
@@ -169,9 +190,18 @@ export async function getPostById(id: number) {
   try {
     const post = await prisma.post.findUnique({
       where: { id: id },
+      // 排序
       include: {
         tags: true,
         author: true,
+        files: {
+          where: {
+            postId: id,
+          },
+          orderBy: {
+            sort: "asc",
+          },
+        },
       },
     });
     return post;
@@ -180,12 +210,11 @@ export async function getPostById(id: number) {
   }
 }
 
-export async function updatePost(
-  formState: (PostFormSchema & { id: number }) | any
-) {
+export async function updatePost(formState: PostFormSchema & { id: number }) {
   const id = formState.id;
   const title = formState.title;
-  const content = formState.content;
+  const files = formState.files || []; // 确保files始终是数组
+  const content = formState?.content;
   const published = formState.published;
   const tags = formState.tags || []; // 确保tags始终是数组
 
@@ -209,6 +238,15 @@ export async function updatePost(
         tags: {
           // set: [], // 清空现有标签
           set: tags.map((tagId: any) => ({ id: Number(tagId) })),
+        },
+        files: {
+          deleteMany: { postId: Number(id) }, // 删除现有文件
+          create: files.map((file, index) => ({
+            name: file.name,
+            language: file.language,
+            value: file.value,
+            sort: index + 1,
+          })),
         },
       },
     });

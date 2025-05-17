@@ -20,32 +20,25 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Editor, { OnMount } from "@monaco-editor/react";
+import { OnMount } from "@monaco-editor/react";
 import { Post, Tag } from "@prisma/client";
 import { enumToArray } from "@shuchaoxxx/csc-utils";
 import clsx from "clsx";
-import { Suspense, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { createPost, updatePost } from "./actions";
-import { postFormSchema } from "./type";
+import { Language, postFormSchema } from "./type";
 // 添加动态加载
-// const Editor = dynamic(
-//   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
-//   { ssr: false }
-// );
+const Editor = dynamic(
+  () => import("@monaco-editor/react").then((mod) => mod.Editor),
+  { ssr: false }
+);
 
 type EditorInstance = Parameters<OnMount>[0];
 type MonacoInstance = Parameters<OnMount>[1];
-
-enum Language {
-  markdown = "markdown",
-  javascript = "javascript",
-  typescript = "typescript",
-  html = "html",
-  css = "css",
-}
 
 export default function PostForm({
   tags,
@@ -53,7 +46,12 @@ export default function PostForm({
 }: {
   tags?: Tag[];
   post?:
-    | (Post & { tags?: Tag[]; language?: string; fileName?: string })
+    | (Post & {
+        tags?: Tag[];
+        language?: string;
+        fileName?: string;
+        files?: { id: string; name: string; language: string; value: string }[];
+      })
     | null
     | undefined;
 }) {
@@ -64,14 +62,16 @@ export default function PostForm({
       language: string;
       value: string;
     }[]
-  >([
-    {
-      id: uuidv4(),
-      name: "markdown.md",
-      language: Language["markdown"],
-      value: "## 1",
-    },
-  ]);
+  >(
+    post?.files ?? [
+      {
+        id: uuidv4(),
+        name: "markdown.md",
+        language: Language.markdown,
+        value: "# 标题",
+      },
+    ]
+  );
 
   const [currentFile, setCurrentFile] = useState<{
     id: string;
@@ -95,8 +95,6 @@ export default function PostForm({
   const monacoRef = useRef<MonacoInstance | null>(null);
   const handleSave = () => {
     const value = editorRef.current?.getValue();
-    console.log("保存内容:", value);
-    // 实际保存逻辑...
   };
   const handleEditorMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -125,16 +123,25 @@ export default function PostForm({
     });
   };
 
+  useEffect(() => {
+    if (post?.files?.length) {
+      setFileArr(post.files);
+    }
+  }, [post]);
+
+  useEffect(() => {
+    form.setValue("files", fileArr);
+  }, [fileArr]);
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => {
-          console.log(data);
-          // if (post?.id) {
-          //   updatePost({ ...data, id: post.id });
-          // } else {
-          //   createPost(data);
-          // }
+          if (post?.id) {
+            updatePost({ ...data, id: post.id });
+          } else {
+            createPost(data);
+          }
         })}
       >
         <div className="flex items-center py-2">
@@ -144,13 +151,9 @@ export default function PostForm({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel>Title</FormLabel> */}
                   <FormControl>
                     <Input placeholder="place input title ..." {...field} />
                   </FormControl>
-                  {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -169,9 +172,6 @@ export default function PostForm({
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -271,13 +271,9 @@ export default function PostForm({
             name="fileName"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel>Title</FormLabel> */}
                 <FormControl>
                   <Input placeholder="文件名..." {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -316,12 +312,12 @@ export default function PostForm({
             添加
           </div>
         </div>
-        <div className="flex  items-center mb-2">
+        <div className="flex  items-center">
           {fileArr.map((item, index) => {
             return (
               <div
                 className={clsx(
-                  "border-2 p-1 flex items-center mr-4 hover:border-indigo-600 cursor-pointer",
+                  "border-2 border-b-0 p-1  flex items-center mr-4 hover:border-indigo-600 cursor-pointer",
                   {
                     "border-indigo-600": currentFile.id === item.id,
                   }
@@ -334,10 +330,10 @@ export default function PostForm({
                   setCurrentFile(item);
                 }}
               >
-                <div className="cursor-pointer">{item.name}</div>
+                <div className="cursor-pointer pr-4 ">{item.name}</div>
                 {fileArr.length > 1 && index !== 0 && (
                   <XMarkIcon
-                    className="h-4 w-4 ml-1 cursor-pointer hover:text-red-500"
+                    className="h-4 w-4 ml-1 cursor-pointer hover:text-red-500 hover:bg-slate-400"
                     aria-hidden="true"
                     onClick={(e) => {
                       if (fileArr.length === 1) {
@@ -362,10 +358,10 @@ export default function PostForm({
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Content</FormLabel>
+              {/* <FormLabel>Content</FormLabel> */}
               <FormControl>
                 <Editor
-                  height="40vh"
+                  height="50vh"
                   theme="vs-dark"
                   options={{
                     // readOnly: true,
@@ -379,11 +375,10 @@ export default function PostForm({
                   }}
                   onMount={handleEditorMount}
                   path={currentFile.name}
-                  // defaultLanguage={currentFile.language}
                   language={currentFile.language}
                   defaultValue={currentFile.value}
-                  // value={currentFile.value}
                   onChange={(value) => {
+                    console.log("value:", value);
                     setFileArr(
                       fileArr.map((file) => {
                         if (file.id === currentFile.id) {
@@ -395,13 +390,9 @@ export default function PostForm({
                         return file;
                       })
                     );
-                    form.setValue("files", fileArr);
                   }}
                 />
               </FormControl>
-              {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `File` ADD COLUMN `sort` INTEGER NULL DEFAULT 0;

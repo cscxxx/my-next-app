@@ -1,4 +1,6 @@
 import { fetchFilteredPosts } from "@/app/auth-page/posts/actions";
+import { Post, Tag, User } from "@prisma/client";
+import React from "react";
 import SingleView from "./single-view";
 
 export default async function InvoicesTable({
@@ -8,24 +10,14 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
-  const posts = await fetchFilteredPosts(query, currentPage);
-
-  // 新增格式化函数
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("zh-CN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
+  const posts: (Post & any)[] = await fetchFilteredPosts(query, currentPage, 1);
 
   return (
-    <div className="rounded-lg p-2 md:pt-0 z-20 mb-[50px]">
+    <div className="rounded-lg p-2 md:pt-0 z-20">
       <div className="md:hidden">
         {posts?.map((post) => (
-          <div key={post.id} className="mb-2 w-full rounded-md bg-white p-4">
-            12123
-            <div className="flex items-center justify-between border-b pb-4">
+          <div key={post.id} className=" w-full rounded-md bg-white ">
+            <div className="flex items-center justify-between border-b ">
               <div>
                 <div className="mb-2 flex items-center">
                   {/* <Image
@@ -60,7 +52,7 @@ export default async function InvoicesTable({
       </div>
       <div className="hidden min-w-full text-gray-900 md:table ">
         {posts.map((post) => {
-          return <SingleView key={post.id} post={post} />;
+          return <SingleView key={`${post.id}-${Date.now()}`} post={post} />;
         })}
       </div>
     </div>

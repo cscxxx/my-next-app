@@ -23,3 +23,10 @@ export const postFormSchema = z.object({
 export type PostFormSchema = z.infer<typeof postFormSchema>;
 
 export type PostFormSchemaType = UseFormReturn<z.infer<typeof postFormSchema>>;
+export enum Language {
+  markdown = "markdown",
+  javascript = "javascript",
+  typescript = "typescript",
+  html = "html",
+  css = "css",
+}

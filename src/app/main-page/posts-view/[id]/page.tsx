@@ -11,7 +11,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     notFound();
   }
   return (
-    <main>
+    <main className="px-2">
       <SingleView post={post} />
     </main>
   );

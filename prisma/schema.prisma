@@ -24,6 +24,19 @@ model Post {
   author    User      @relation(fields: [authorId], references: [id])
   date      DateTime? @default(now())
   tags      Tag[]
+  files     File[] // 新增关联字段（一对多）
+}
+
+model File {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  language  String    @db.VarChar(50)
+  value     String    @db.Text
+  post      Post?     @relation(fields: [postId], references: [id]) // 反向关联
+  createdAt DateTime? @default(now())
+  postId    Int? // 关联Post的id（允许为空）
+  // 能排序
+  sort      Int?      @default(0)
 }
 
 // 标签
