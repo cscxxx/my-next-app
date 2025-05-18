@@ -34,6 +34,8 @@
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cos-js-sdk-v5": "^1.10.1",
+    "cos-nodejs-sdk-v5": "^2.14.7",
     "db": "file:src/generated/client",
     "highlight.js": "^11.11.1",
     "lucide-react": "^0.474.0",

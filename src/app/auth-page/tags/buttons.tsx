@@ -17,7 +17,7 @@ export function DeleteTag({ id }: { id: number }) {
   const deleteTagWithId = deleteTag.bind(null, id);
   return (
     <form action={deleteTagWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+      <button type="submit" className="rounded-md  hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
@@ -29,9 +29,9 @@ export function UpdateTag({ id }: { id: number }) {
   return (
     <Link
       href={`/auth-page/tags/${id}/edit`}
-      className="rounded-md w-[100px] border  hover:bg-gray-100 flex items-center justify-center "
+      className="flex w-[100px]  rounded-md hover:bg-gray-100"
     >
-      <PencilIcon className="w-[30px]" />
+      <PencilIcon className="w-6" />
       编辑
     </Link>
   );

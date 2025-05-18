@@ -85,7 +85,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 
 // 配置markdown-it
 export const md = markdownit({
-  // html: true, // 允许HTML标签
+  html: true, // 允许HTML标签
   linkify: true, // 自动将URL文本转换为链接
   breaks: true, // 允许回车换行
   typographer: true,
