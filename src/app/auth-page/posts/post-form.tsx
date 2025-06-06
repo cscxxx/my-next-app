@@ -22,7 +22,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OnMount } from "@monaco-editor/react";
 import { Post, Tag } from "@prisma/client";
-import { enumToArray } from "@shuchaoxxx/csc-utils";
+// import { enumToArray } from "@shuchaoxxx/csc-utils";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -255,13 +255,13 @@ export default function PostForm({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {enumToArray(Language).map((item) => {
+                    {/* {enumToArray(Language).map((item) => {
                       return (
                         <SelectItem key={item.value} value={item.value}>
                           {item.label}
                         </SelectItem>
                       );
-                    })}
+                    })} */}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -399,7 +399,7 @@ export default function PostForm({
         <div
           className="markdown-content p-2 overflow-auto"
           dangerouslySetInnerHTML={{
-            __html: md.render(fileArr[0]?.value ?? ""),
+            __html: md?.render(fileArr[0]?.value ?? ""),
           }}
         />
       </form>

@@ -125,7 +125,7 @@ export default function Index({
                 : "calc(100vh - 192px)",
             }} // 应用字体大小
             dangerouslySetInnerHTML={{
-              __html: md.render(post?.files?.[0]?.value ?? ""),
+              __html: md?.render(post?.files?.[0]?.value ?? ""),
             }}
           />
         )}
