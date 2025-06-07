@@ -63,3 +63,23 @@ pm2 list
 ```bash
 pm2 logs my-next-app
 ```
+
+### 调试
+
+- 查看端口是否被占用
+
+```bash
+lsof -i :3000
+```
+
+- 查看端口被占用的进程
+
+```bash
+ps -ef | grep 3000
+```
+
+- 杀死进程
+
+```bash
+kill -9 进程id  # 进程id 为 ps -ef | grep 3000 命令的进程id
+```

@@ -255,6 +255,14 @@ export default function PostForm({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    {Object.values(Language).map((item) => {
+                      return (
+                        <SelectItem key={item} value={item}>
+                          {item}
+                        </SelectItem>
+                      );
+                    })}
+
                     {/* {enumToArray(Language).map((item) => {
                       return (
                         <SelectItem key={item.value} value={item.value}>
