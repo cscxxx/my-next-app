@@ -28,13 +28,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      className="bg-background " // 新增：应用背景色到根元素
       // className="dark"
-      // style={{
-      //   filter: "invert(1) hue-rotate(180deg)",
-      // }}
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`} // 新增：确保 body 背景覆盖
       >
         {children}
       </body>
