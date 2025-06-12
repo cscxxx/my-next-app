@@ -36,6 +36,14 @@ export default function Page() {
         textAlign="center"
         onLetterAnimationComplete={handleAnimationComplete}
       />
+      <div>promise</div>
+      <div>Filber</div>
+      <div>canves</div>
+      <div>three</div>
+      <div>大屏</div>
+      <div>AI</div>
+      <div>应用</div>
+
       <Ballpit
         className="absolute top-0 left-0 w-full h-full"
         count={100}

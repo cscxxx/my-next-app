@@ -170,3 +170,13 @@ markdown应用块的·
 .markdown-content ol ul {
   @apply my-0;
 }
+
+.bottom-use-hide::after {
+  content: "";
+  position: absolute;
+  top: 0px; /* 偏移量 */
+  left: 0px;
+  right: 0px;
+  bottom: -2px;
+  border-bottom: 2px solid #fff;
+}

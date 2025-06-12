@@ -97,9 +97,9 @@ export default function Index({
           return (
             <div
               className={clsx(
-                "pt-1 px-2 border-[1.5px] border-b-0 space-x-2 mt-2 ml-2 rounded-t-md hover:bg-sky-100 hover:text-blue-600 cursor-pointer",
+                "pt-1 px-2 border-[1.5px] border-b-0 space-x-2 mt-2 ml-2  relative rounded-t-md hover:bg-sky-100 hover:text-blue-600 cursor-pointer",
                 {
-                  "bg-sky-100 text-blue-600 border-blue-600":
+                  " text-blue-600 border-blue-600 bottom-use-hide ":
                     current.id === file.id,
                 }
               )}
@@ -117,7 +117,13 @@ export default function Index({
         current.language === Language.markdown &&
         current?.id === post?.files?.[0].id && (
           <div
-            className="markdown-content p-2 overflow-auto"
+            className={clsx(
+              "markdown-content p-2 overflow-auto border-2 rounded-b-md  border-[#2563eb]"
+              // {
+              //   "bg-sky-100 text-blue-600 border-blue-600":
+              //     current?.id === post?.files?.[0].id,
+              // }
+            )}
             style={{
               fontSize: `${fontSize}px`,
               height: isNotFullscreen
@@ -132,7 +138,7 @@ export default function Index({
       {current &&
         post?.files.length > 1 &&
         current?.id !== post?.files?.[0].id && (
-          <div className="p-2 rounded-md">
+          <div className="p-2  border-2 rounded-b-md  border-[#2563eb] ">
             <Editor
               height={
                 isNotFullscreen ? "calc(100vh - 128px)" : "calc(100vh - 210px)"
