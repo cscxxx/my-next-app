@@ -10,7 +10,7 @@ import {
 import { File, Post, Tag, User } from "@prisma/client";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
-import { RefObject, useRef, useState } from "react";
+import { RefObject, Suspense, useRef, useState } from "react";
 import { useFullscreen, useToggle } from "react-use";
 // 添加动态加载
 const Editor = dynamic(
@@ -138,21 +138,30 @@ export default function Index({
       {current &&
         post?.files.length > 1 &&
         current?.id !== post?.files?.[0].id && (
-          <div className="p-2  border-2 rounded-b-md  border-[#2563eb] ">
-            <Editor
-              height={
-                isNotFullscreen ? "calc(100vh - 128px)" : "calc(100vh - 210px)"
-              }
-              theme="vs-dark"
-              defaultValue={post?.files?.[0]?.value ?? ""}
-              language={current?.language ?? "markdown"}
-              value={current?.value ?? ""}
-              options={{
-                readOnly: true,
-                fontSize: fontSize, // 应用字体大小
-              }}
-            />
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <div
+              className={clsx("p-2  border-2 rounded-b-md border-[#2563eb] ", {
+                "h-[calc(100vh-115px)]": isNotFullscreen,
+                "h-[calc(100vh-192px)]": !isNotFullscreen,
+              })}
+            >
+              <Editor
+                height={
+                  isNotFullscreen
+                    ? "calc(100vh - 135px)"
+                    : "calc(100vh - 212px)"
+                }
+                theme="vs-dark"
+                defaultValue={post?.files?.[0]?.value ?? ""}
+                language={current?.language ?? "markdown"}
+                value={current?.value ?? ""}
+                options={{
+                  readOnly: true,
+                  fontSize: fontSize, // 应用字体大小
+                }}
+              />
+            </div>
+          </Suspense>
         )}
     </div>
   );
