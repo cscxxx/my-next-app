@@ -3,9 +3,12 @@ import Ballpit from "@/components/animate/Ballpit";
 import SplitText from "@/components/animate/SplitText";
 import React, { useRef } from "react";
 import DragList from "@/components/drag-list";
+import { useRouter } from "next/navigation";
 // import { formatDate, enumToArray, Button, Header } from "@shuchaoxxx/csc-utils";
 
 export default function Page() {
+  const router = useRouter();
+
   enum Status {
     PENDING,
     SUCCESS,
@@ -22,13 +25,17 @@ export default function Page() {
   const datalist = [
     { name: "promise", id: "id-promise" },
     { name: "Filber", id: "id-Filber" },
-    { name: "canves", id: "id-canves" },
+    { name: "canves", id: "id-canves", href: "/main-page/demo/canves" },
     { name: "three", id: "id-three" },
     { name: "大屏", id: "id-大屏" },
     { name: "AI", id: "id-AI" },
     { name: "应用", id: "id-应用" },
     { name: "class", id: "id-class" },
   ];
+  // 跳转到指定界面
+  const handleItemClick = (href: string) => {
+    router.push(href);
+  };
 
   return (
     <div
@@ -53,7 +60,16 @@ export default function Page() {
       <DragList className="flex items-center justify-center">
         {datalist.map((item) => {
           return (
-            <div draggable={true} key={item.id} className={itemsClassStyle}>
+            <div
+              draggable={true}
+              key={item.id}
+              className={itemsClassStyle}
+              onClick={() => {
+                if (item.href) {
+                  handleItemClick(item.href);
+                }
+              }}
+            >
               {item.name}
             </div>
           );
