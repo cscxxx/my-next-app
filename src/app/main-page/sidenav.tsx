@@ -8,7 +8,14 @@ import Search from "./search";
 export default function SideNav() {
   return (
     // <div className="flex h-full flex-col">
-    <div className="flex grow  items-center gap-2  py-2 px-2  fixed top-0 right-0 left-0 z-20 bg-white">
+    <div
+      className="flex grow  items-center gap-x-2 py-2 px-2  fixed top-0 right-0 left-0 z-20 bg-white"
+      style={{
+        padding: 0,
+        margin: 0,
+        overflow: "hidden",
+      }}
+    >
       <Link
         className={`${lusitana.className} h-[48px] p-2 flex flex-row items-center leading-none  text-white  rounded-md bg-blue-600`}
         href="/main-page"

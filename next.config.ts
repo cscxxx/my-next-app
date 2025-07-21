@@ -13,9 +13,9 @@ const nextConfig: NextConfig = {
     DATABASE_URL: process.env.DATABASE_URL,
   },
   // output: "export",
-  // port: 4000,
+  // port: 3000,
   devServer: {
-    port: 4000,
+    port: 3000,
   },
 };
 

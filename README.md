@@ -33,7 +33,7 @@ npm install -g pm2
 ```bash
 pm2 start "npm run start" --name my-next-app  # 启动命令，--name 为项目名称
 # 指定端口
-PORT=4000 pm2 start "npm run start" --name my-next-app
+PORT=3000 pm2 start "npm run start" --name my-next-app
 ```
 
 3. 停止项目

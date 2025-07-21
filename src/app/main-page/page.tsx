@@ -27,7 +27,7 @@ export default function Page() {
     { name: "Filber", id: "id-Filber" },
     { name: "canves", id: "id-canves", href: "/main-page/demo/canves" },
     { name: "three", id: "id-three" },
-    { name: "大屏", id: "id-大屏" },
+    { name: "大屏", id: "id-大屏", href: "/main-page/demo/big-screen" },
     { name: "AI", id: "id-AI" },
     { name: "应用", id: "id-应用" },
     { name: "class", id: "id-class" },
@@ -41,6 +41,7 @@ export default function Page() {
     <div
       style={{
         height: "calc(100vh - 68px)",
+        // overflow: "hidden",
       }}
     >
       <SplitText
@@ -75,7 +76,7 @@ export default function Page() {
           );
         })}
       </DragList>
-      <div
+      {/* <div
         style={{
           height: "calc(100vh - 175px)",
         }}
@@ -90,7 +91,7 @@ export default function Page() {
           colors={["#007BFF", "#FF6B6B", "#FFD700", "#4CAF50"]}
           lightIntensity={10}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

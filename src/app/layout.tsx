@@ -32,7 +32,8 @@ export default function RootLayout({
       // className="dark"
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`} // 新增：确保 body 背景覆盖
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
+        style={{ margin: 0, padding: 0 }} // 新增：确保 body 背景覆盖
       >
         {children}
       </body>

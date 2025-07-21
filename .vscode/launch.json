@@ -33,7 +33,7 @@
         "request": "launch",
         "program": "${workspaceFolder}/node_modules/.bin/next",
         "runtimeArgs": ["--inspect=9230"],
-        "args": ["-p", "4000"], // 新增端口参数
+        "args": ["-p", "3000"], // 新增端口参数
         "skipFiles": ["<node_internals>/**"],
         "serverReadyAction": {
           // "action": "debugWithEdge",
