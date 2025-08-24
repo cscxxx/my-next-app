@@ -28,6 +28,11 @@ export default function Page() {
     { name: "canves", id: "id-canves", href: "/main-page/demo/canves" },
     { name: "three", id: "id-three" },
     { name: "大屏", id: "id-大屏", href: "/main-page/demo/big-screen" },
+    {
+      name: "自适应走马灯卡片",
+      id: "CarouselCard",
+      href: "/main-page/demo/carousel-card",
+    },
     { name: "AI", id: "id-AI" },
     { name: "应用", id: "id-应用" },
     { name: "class", id: "id-class" },

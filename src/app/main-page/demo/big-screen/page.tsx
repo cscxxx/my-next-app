@@ -16,8 +16,8 @@ export default () => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.target === containerRef.current) {
-          console.log("父--宽度", entry.target.clientWidth);
-          console.log("父--高度", entry.target.clientHeight);
+          // console.log("父--宽度", entry.target.clientWidth);
+          // console.log("父--高度", entry.target.clientHeight);
           setRatio(
             Math.min(
               (entry.target as HTMLElement).clientWidth / 1920,
