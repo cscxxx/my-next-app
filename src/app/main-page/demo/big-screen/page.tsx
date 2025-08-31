@@ -81,9 +81,9 @@ export default () => {
         }}
         className=" grid  grid-cols-3 grid-rows-2 "
       >
-        <div>
+        <div className="bg-[pink]">
           <div
-            className="cursor-pointer p-2 w-[50px] rounded-md hover:bg-[#e3f1fd]"
+            className="cursor-pointer p-2 w-[50px] rounded-md hover:bg-[#e3f1fd]  "
             onClick={() => {
               router.back();
             }}
@@ -109,11 +109,11 @@ export default () => {
             </button>
           </div>
         </div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
+        <div className="bg-[pink]">2</div>
+        <div className="bg-[pink]">3</div>
+        <div className="bg-[pink]">4</div>
+        <div className="bg-[pink]">5</div>
+        <div className="bg-[pink]">6</div>
       </div>
     </div>
   );

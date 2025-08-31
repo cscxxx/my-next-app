@@ -23,19 +23,20 @@ export default function Page() {
     "h-full bg-blue-500 w-[100px] flex items-center justify-center px-4 py-2 text-white cursor-pointer m-6  rounded-md";
 
   const datalist = [
-    { name: "promise", id: "id-promise" },
-    { name: "Filber", id: "id-Filber" },
-    { name: "canves", id: "id-canves", href: "/main-page/demo/canves" },
-    { name: "three", id: "id-three" },
-    { name: "大屏", id: "id-大屏", href: "/main-page/demo/big-screen" },
     {
       name: "自适应走马灯卡片",
       id: "CarouselCard",
       href: "/main-page/demo/carousel-card",
     },
-    { name: "AI", id: "id-AI" },
-    { name: "应用", id: "id-应用" },
-    { name: "class", id: "id-class" },
+    { name: "canves", id: "id-canves", href: "/main-page/demo/canves" },
+    { name: "大屏", id: "id-大屏", href: "/main-page/demo/big-screen" },
+    { name: "echarts", id: "id-echarts", href: "/main-page/demo/echarts" },
+    // { name: "promise", id: "id-promise" },
+    // { name: "Filber", id: "id-Filber" },
+    // { name: "three", id: "id-three" },
+    // { name: "AI", id: "id-AI" },
+    // { name: "应用", id: "id-应用" },
+    // { name: "class", id: "id-class" },
   ];
   // 跳转到指定界面
   const handleItemClick = (href: string) => {
